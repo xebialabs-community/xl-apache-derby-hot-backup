@@ -1,0 +1,31 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+plugins {
+  id "com.github.hierynomus.license" version "0.11.0"
+}
+apply plugin: 'java'
+
+group 'com.xebialabs.xlrelease.plugins'
+version '1.0-SNAPSHOT'
+
+def xlReleaseHome = project.hasProperty('xlReleaseHome') ? project.xlReleaseHome : System.env.XLRELEASE_HOME
+if (!xlReleaseHome) {
+  throw new RuntimeException("Please specify location of unpacked XL Release server installation in your " +
+      "gradle.properties or with '-PxlReleaseHome=/path/to/xl/release/server' command line option")
+}
+
+dependencies {
+  compile fileTree(dir: "$xlReleaseHome/lib", include: ['*.jar'])
+}
+
+processResources.configure {
+  filter ReplaceTokens, tokens: [
+      'project.version': version.toString(),
+      'project.name': rootProject.name
+  ]
+}
+
+license {
+  header rootProject.file('src/main/license/xebialabs_community.license')
+  strictCheck true
+  excludes(["**/*.json", "**/*.conf"])
+}
