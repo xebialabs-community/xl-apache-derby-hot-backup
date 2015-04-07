@@ -53,15 +53,15 @@ public class DerbyDbBackupResource {
     }
 
     @POST
-    public void backup(@QueryParam("path") String backup_path) {
+    public void backup(@QueryParam("path") String backupPath) {
         if (!permissionEnforcer.hasLoggedInUserPermission(ADMIN)) {
             throw PermissionDeniedException.forPermission(ADMIN, (String) null);
         }
 
-        if (isNullOrEmpty(backup_path)) {
+        if (isNullOrEmpty(backupPath)) {
             throw new Checks.MissingArgumentException("path");
         }
-        File folder = new File(backup_path, "repository");
+        File folder = new File(backupPath, "repository");
         if (!folder.exists() && !folder.mkdirs()) {
             throw new Checks.IncorrectArgumentException(format("Could not create backup directory [%s], " +
                     "please make sure the user running XL Release process has enough access rights", folder));
@@ -86,7 +86,7 @@ public class DerbyDbBackupResource {
             if (!xml.exists()) {
                 throw new DeployitException("Could not find workspace XML file at " + xml);
             }
-            File xmlBackup = new File(backup_path, workspaceXml);
+            File xmlBackup = new File(backupPath, workspaceXml);
             if (!xmlBackup.getParentFile().exists() && !xmlBackup.getParentFile().mkdirs()) {
                 throw new Checks.IncorrectArgumentException("Could not create folders for " + xmlBackup);
             }

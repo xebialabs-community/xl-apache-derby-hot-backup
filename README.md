@@ -4,13 +4,16 @@ This project defines an XL Release and XL Deploy plugin which adds a way to make
 
 ## Installation
 
-This plugin only works with _custom_ Jackrabbit repository configuration which you can find [here](src/main/resources/sample/jackrabbit-repository.xml). If you want to apply it to an existing repository, then you will have to do a repository migration. 
+This plugin only works with _custom_ Jackrabbit repository configuration which you can find [here](src/main/resources/sample/jackrabbit-repository.xml). If you want to apply it to an existing repository, then you will have to do a repository migration as described [here](http://blog.xebialabs.com/2015/04/07/how-to-migrate-xl-repository-to-another-database/).
+
+Note also that this plugin relies on standard repository path in your XL Release or XL Deploy: it has to be `XLR_or_XLD_HOME/repository/`.
 
 The reason for custom Jackrabbit configuration is that by default attachment files are stored on filesystem and not in database. So a backup of standard configuration would not be complete.
 
 To install the plugin you have to:
 
 1. Copy the [jackrabbit-repository.xml](src/main/resources/sample/jackrabbit-repository.xml) into the `XLR_or_XLD_HOME/conf/` folder, replacing the default one.
+
   1.1. If you already have data in your repository, then you have to migrate it instead to the new Jackrabbit configuration. This is out of scope of this plugin.
 2. Place the `xl-apache-derby-hot-backup-1.0.jar` into `XLR_or_XLD_HOME/plugins/`.
 3. Start the server.
@@ -39,4 +42,5 @@ As a result of the call a folder `repository` will be created in specified direc
 2. Rename or move current `XL_HOME/repository/` folder.
 3. Copy the backed up folder into `XL_HOME`, e.g.: `cp -r /tmp/backups/backup-1/repository $XL_HOME/`.
 4. Start the server.
-  4.1. *Note* that Lucene indexes cannot be backed up, so they will be rebuilt from scratch when restoring from the backup. This may take hours if you have a large repository.
+
+  4.1. **Note** that Lucene indexes cannot be backed up, so they will be rebuilt from scratch when restoring from the backup. This may take hours if you have a large repository.
