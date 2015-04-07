@@ -4,7 +4,7 @@ This project defines an XL Release and XL Deploy plugin which adds a way to make
 
 ## Installation
 
-This plugin only works with _custom_ Jackrabbit repository configuration which you can find [here](src/main/resources/sample/jackrabbit-repository.xml). If you want to apply it to an existing repository, then you will have to do a repository migration as described [here](http://blog.xebialabs.com/2015/04/07/how-to-migrate-xl-repository-to-another-database/).
+This plugin only works with _custom_ Jackrabbit repository configuration which you can find [in `jackrabbit-repository.xml` here](src/main/resources/sample/jackrabbit-repository.xml).
 
 Note also that this plugin relies on standard repository path in your XL Release or XL Deploy: it has to be `XLR_or_XLD_HOME/repository/`.
 
@@ -12,10 +12,10 @@ The reason for custom Jackrabbit configuration is that by default attachment fil
 
 To install the plugin you have to:
 
-1. Copy the [jackrabbit-repository.xml](src/main/resources/sample/jackrabbit-repository.xml) into the `XLR_or_XLD_HOME/conf/` folder, replacing the default one.
+1. Download and copy the [jackrabbit-repository.xml](src/main/resources/sample/jackrabbit-repository.xml) into the `XLR_or_XLD_HOME/conf/` folder, replacing the default one.
 
-  1.1. If you already have data in your repository, then you have to migrate it instead to the new Jackrabbit configuration. This is out of scope of this plugin.
-2. Place the `xl-apache-derby-hot-backup-1.0.jar` into `XLR_or_XLD_HOME/plugins/`.
+  1.1. If you already have data in your repository, then you have to migrate it instead to the new Jackrabbit configuration. You can read [in this blog post](http://blog.xebialabs.com/2015/04/07/how-to-migrate-xl-repository-to-another-database/) to find out how.
+2. Download the [`xl-apache-derby-hot-backup-1.0.jar`](https://github.com/xebialabs-community/xl-apache-derby-hot-backup/releases/download/v1.0/xl-apache-derby-hot-backup-1.0.jar) into `XLR_or_XLD_HOME/plugins/`.
 3. Start the server.
 
 ## Usage
