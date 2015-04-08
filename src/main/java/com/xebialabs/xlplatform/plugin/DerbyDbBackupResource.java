@@ -62,7 +62,11 @@ public class DerbyDbBackupResource {
             throw new Checks.MissingArgumentException("path");
         }
         File folder = new File(backupPath, "repository");
-        if (!folder.exists() && !folder.mkdirs()) {
+        if (folder.exists()) {
+            throw new Checks.IncorrectArgumentException(format("There seems to already be an existing backup in directory [%s], " +
+                    "please specify a different directory", folder));
+        }
+        if (!folder.mkdirs()) {
             throw new Checks.IncorrectArgumentException(format("Could not create backup directory [%s], " +
                     "please make sure the user running XL Release process has enough access rights", folder));
         }
