@@ -22,15 +22,15 @@ To install the plugin you have to:
 
 ### Creating backup
 
-The plugin adds a new REST endpoint which triggers a hot backup to be created: `POST /create-derby-hot-backup?path=/backup/location`. The `path` query parameter specifies where the data will be backed up to. Write permissions are of course needed on that folder.
+The plugin adds a new REST endpoint which triggers a hot backup to be created: `POST /server/derby-backup?path=/backup/location`. The `path` query parameter specifies where the data will be backed up to. Write permissions are of course needed on that folder.
 
 You can make the hot backup in XL Release using following `curl` statement, assuming XL Release is running on http://localhost:5516/my-xlr/:
 
-    curl --user admin -X POST http://localhost:5516/my-xlr/create-derby-hot-backup\?path\=/tmp/backups/$(date +"%Y-%m-%d_%H-%M-%S")
+    curl --user admin -X POST http://localhost:5516/my-xlr/server/derby-backup\?path\=/tmp/backups/$(date +"%Y-%m-%d_%H-%M-%S")
     
 For XL Deploy it is almost the same:
 
-    curl --user admin -X POST http://localhost:4516/my-xld/deployit/create-derby-hot-backup\?path\=/tmp/backups/$(date +"%Y-%m-%d_%H-%M-%S")
+    curl --user admin -X POST http://localhost:4516/my-xld/deployit/server/derby-backup\?path\=/tmp/backups/$(date +"%Y-%m-%d_%H-%M-%S")
 
 This call will ask you for a password and save a backup in a new timestamp directory, e.g. `/tmp/backups/2015-04-08_17-29-10`. Only _admin_ users are allowed to create backups.
 

@@ -3,7 +3,7 @@
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS
  * FOR A PARTICULAR PURPOSE. THIS CODE AND INFORMATION ARE NOT SUPPORTED BY XEBIALABS.
  */
-package com.xebialabs.xlplatform.plugin;
+package com.xebialabs.deployit.plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.xebialabs.deployit.security.permission.PlatformPermissions.ADMIN;
 import static java.lang.String.format;
 
-@Path("/create-derby-hot-backup")
+@Path("/server/derby-backup")
 @Produces({MediaType.APPLICATION_JSON})
 @Controller
 public class DerbyDbBackupResource {
