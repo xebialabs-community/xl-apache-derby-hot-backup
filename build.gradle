@@ -8,7 +8,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 group 'com.xebialabs.xlplatform.plugin'
-version '1.3-SNAPSHOT'
+version '1.3.0'
 
 def xlReleaseHome = project.hasProperty('xlReleaseHome') ? project.xlReleaseHome : System.env.XLRELEASE_HOME
 if (!xlReleaseHome) {
