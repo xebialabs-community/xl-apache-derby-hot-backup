@@ -27,6 +27,9 @@ The plugin adds a new REST endpoint which triggers a hot backup to be created: `
 You can make the hot backup in XL Release using following `curl` statement, assuming XL Release is running on http://localhost:5516/my-xlr/:
 
     curl --user admin -X POST http://localhost:5516/my-xlr/server/derby-backup\?path\=/tmp/backups/$(date +"%Y-%m-%d_%H-%M-%S")
+
+For XL Release you can optionally also specify the `repo` parameter, with following values: `repository` or `archive`. If nothing is specified the `repository` will be backed up.
+
     
 For XL Deploy it is almost the same:
 

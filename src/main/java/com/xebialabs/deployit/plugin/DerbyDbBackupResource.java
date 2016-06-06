@@ -11,10 +11,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +35,10 @@ public class DerbyDbBackupResource {
 
     private static final Logger logger = LoggerFactory.getLogger(DerbyDbBackupResource.class);
 
-    public static final String DERBY_JDBC_URL_TEMPLATE = "jdbc:derby:%s;create=false";
-    public static final String DEFAULT_DB = "repository/db";
-    public static final String[] WORKSPACE_XML_LOCATIONS = new String[] {
+    private static final String DERBY_JDBC_URL_TEMPLATE = "jdbc:derby:%s;create=false";
+    private static final String DEFAULT_DB = "repository/db";
+    private static final String ARCHIVE_DB = "archive/db";
+    private static final String[] WORKSPACE_XML_LOCATIONS = new String[] {
             "repository/workspaces/default/workspace.xml",
             "repository/workspaces/security/workspace.xml"
     };
@@ -53,7 +51,7 @@ public class DerbyDbBackupResource {
     }
 
     @POST
-    public void backup(@QueryParam("path") String backupPath) {
+    public void backup(@QueryParam("path") String backupPath, @DefaultValue("repository") @QueryParam("repo") String repository) {
         if (!permissionEnforcer.hasLoggedInUserPermission(ADMIN)) {
             throw PermissionDeniedException.forPermission(ADMIN, (String) null);
         }
@@ -61,6 +59,15 @@ public class DerbyDbBackupResource {
         if (isNullOrEmpty(backupPath)) {
             throw new Checks.MissingArgumentException("path");
         }
+
+        String repo = DEFAULT_DB;
+        if (repository.equalsIgnoreCase("repository")) {
+            repo = DEFAULT_DB;
+        }
+        if (repository.equalsIgnoreCase("archive")) {
+            repo = ARCHIVE_DB;
+        }
+
         File folder = new File(backupPath, "repository");
         if (folder.exists()) {
             throw new Checks.IncorrectArgumentException(format("There seems to already be an existing backup in directory [%s], " +
@@ -71,7 +78,7 @@ public class DerbyDbBackupResource {
                     "please make sure the user running XL Release process has enough access rights", folder));
         }
 
-        String url = format(DERBY_JDBC_URL_TEMPLATE, DEFAULT_DB);
+        String url = format(DERBY_JDBC_URL_TEMPLATE, repo);
         logger.info("Starting backup of Derby database " + url);
         try (
                 Connection connection = DriverManager.getConnection(url, "", "");
@@ -84,20 +91,22 @@ public class DerbyDbBackupResource {
             throw new DeployitException(e, "Could not create a backup of Derby database");
         }
 
-        logger.info("Database backup is done, copying additional files");
-        for (String workspaceXml : WORKSPACE_XML_LOCATIONS) {
-            File xml = new File(workspaceXml);
-            if (!xml.exists()) {
-                throw new DeployitException("Could not find workspace XML file at " + xml);
-            }
-            File xmlBackup = new File(backupPath, workspaceXml);
-            if (!xmlBackup.getParentFile().exists() && !xmlBackup.getParentFile().mkdirs()) {
-                throw new Checks.IncorrectArgumentException("Could not create folders for " + xmlBackup);
-            }
-            try {
-                Files.copy(xml, xmlBackup);
-            } catch (IOException e) {
-                throw new DeployitException(e, format("Could not copy workspace XML file %s to %s", xml, xmlBackup));
+        if (repo.equals(DEFAULT_DB)) {
+            logger.info("Database backup is done, copying additional files");
+            for (String workspaceXml : WORKSPACE_XML_LOCATIONS) {
+                File xml = new File(workspaceXml);
+                if (!xml.exists()) {
+                    throw new DeployitException("Could not find workspace XML file at " + xml);
+                }
+                File xmlBackup = new File(backupPath, workspaceXml);
+                if (!xmlBackup.getParentFile().exists() && !xmlBackup.getParentFile().mkdirs()) {
+                    throw new Checks.IncorrectArgumentException("Could not create folders for " + xmlBackup);
+                }
+                try {
+                    Files.copy(xml, xmlBackup);
+                } catch (IOException e) {
+                    throw new DeployitException(e, format("Could not copy workspace XML file %s to %s", xml, xmlBackup));
+                }
             }
         }
 
