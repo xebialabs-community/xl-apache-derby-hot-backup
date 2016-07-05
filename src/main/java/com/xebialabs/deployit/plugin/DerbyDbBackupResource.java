@@ -53,10 +53,12 @@ public class DerbyDbBackupResource {
     @POST
     public void backup(@QueryParam("path") String backupPath, @DefaultValue("repository") @QueryParam("repo") String repository) {
         if (!permissionEnforcer.hasLoggedInUserPermission(ADMIN)) {
+            logger.error("Incorrect permissions for hot backup");
             throw PermissionDeniedException.forPermission(ADMIN, (String) null);
         }
 
         if (isNullOrEmpty(backupPath)) {
+            logger.error("No backup path specified for hot backup");
             throw new Checks.MissingArgumentException("path");
         }
 
@@ -70,10 +72,12 @@ public class DerbyDbBackupResource {
 
         File folder = new File(backupPath, "repository");
         if (folder.exists()) {
+            logger.error("Backup path already exists.");
             throw new Checks.IncorrectArgumentException(format("There seems to already be an existing backup in directory [%s], " +
                     "please specify a different directory", folder));
         }
         if (!folder.mkdirs()) {
+            logger.error("Could not create backup path");
             throw new Checks.IncorrectArgumentException(format("Could not create backup directory [%s], " +
                     "please make sure the user running XL Release process has enough access rights", folder));
         }
